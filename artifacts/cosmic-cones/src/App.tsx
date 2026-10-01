@@ -118,6 +118,10 @@ function Home() {
       ],
     },
   ] as const;
+  const totalDesignCount = collections.reduce(
+    (total, collection) => total + collection.items.length,
+    0,
+  );
   const todayKey = (now.getMonth() + 1) * 100 + now.getDate();
   const visibleCollections = collections.filter((collection) => {
     if (collection.name === 'Classic') return true;
@@ -132,6 +136,13 @@ function Home() {
     : activeSeasonalCollections.length === 1
       ? `${activeSeasonalCollections[0].name} is in its scheduled release window.`
       : `${activeSeasonalCollections.map((collection) => collection.name).join(' and ')} are in their scheduled release windows.`;
+  const tickerMessages = [
+    'SMALL OBJECTS, BIG UNIVERSE',
+    ...activeSeasonalCollections.map(
+      (collection) => `${collection.name.toUpperCase()} COLLECTION IS AVAILABLE`,
+    ),
+    'FIND YOUR FAVORITE',
+  ];
 
   return (
     <main className="cosmic-page" id="top">
@@ -146,16 +157,52 @@ function Home() {
         <button className="mobile-menu" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
       </header>
 
-      <section className="ticker" aria-label="Brand statement">
-        <div className="ticker-track"><span>SMALL OBJECTS, BIG UNIVERSE</span><i aria-hidden="true" /><span>MADE FOR THE CURIOUS</span><i aria-hidden="true" /><span>FIND YOUR FAVORITE</span><i aria-hidden="true" /><span>SMALL OBJECTS, BIG UNIVERSE</span><i aria-hidden="true" /><span>MADE FOR THE CURIOUS</span><i aria-hidden="true" /></div>
+      <section className="hero" aria-labelledby="hero-title">
+        <div className="hero-art" aria-hidden="true">
+          <span className="hero-orbit hero-orbit-one" />
+          <span className="hero-orbit hero-orbit-two" />
+          <span className="hero-star hero-star-one" />
+          <span className="hero-star hero-star-two" />
+          <div className="hero-cone-wrap">
+            <ConeIllustration colors={['#b9b9b4', '#e7e2d8']} metallic />
+          </div>
+          <span className="hero-art-caption">LEGENDARY · METALLIC</span>
+        </div>
+        <div className="hero-copy">
+          <div className="eyebrow"><span className="eyebrow-star" /> POCKET-SIZED FIDGETS</div>
+          <h1 id="hero-title">Cosmic<br /><em>Cones</em></h1>
+          <p className="hero-intro">A pocket-sized fidget cone with playful color, character, and the thrill of the unexpected.</p>
+          <div className="hero-actions">
+            <a href="#collections" className="button-primary">Explore the collections <ArrowDown size={16} /></a>
+            <span className="hero-note">Browse by collection.<br />Sales coming soon.</span>
+          </div>
+          <div className="hero-edition">
+            <span className="edition-spark"><Sparkles size={14} /></span>
+            <span><b>{collections.length} scheduled collections</b><small>Released throughout the year</small></span>
+            <span className="edition-divider" />
+            <span><b>{totalDesignCount} cone designs</b><small>Rarity odds shown for each</small></span>
+          </div>
+        </div>
+        <span className="hero-side-note">COLLECT THE UNEXPECTED · VOL. 01</span>
+        <a className="scroll-cue" href="#collections"><span>SCROLL TO EXPLORE</span><ArrowDown size={14} /></a>
+      </section>
+
+      <section className="ticker" aria-label="Cosmic Cones updates">
+        <div className="ticker-track">
+          {[0, 1].map((loopIndex) => (
+            <div className="ticker-group" aria-hidden={loopIndex === 1} key={loopIndex}>
+              {tickerMessages.map((message, messageIndex) => (
+                <span className="ticker-item" key={`${loopIndex}-${messageIndex}`}>
+                  {message}<i aria-hidden="true" />
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="collections-section" id="collections">
-        <div className="section-kicker"><span>01 / THE COLLECTIONS</span><span>CHOOSE A LITTLE WORLD <ArrowDown size={13} /></span></div>
-        <div className="collection-heading">
-          <div><h2>A universe of<br /><em>little discoveries.</em></h2></div>
-          <p>Classic is always here. Seasonal collections appear automatically during their scheduled release windows.</p>
-        </div>
+        <div className="section-kicker"><span>01 / THE COLLECTIONS</span></div>
         <div className="collection-list">
           {visibleCollections.map((collection, index) => (
             <article className={`collection-block ${collection.tone}`} id={`collection-${collection.tone}`} key={collection.name}>
