@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Cosmic Cones"
+description = "A colorful storefront for Cosmic Cones, a collectable fidget cone brand made by Gavyan Co. Browse Classic and seasonal cone collections, learn about each design and rarity, and see that sales are coming soon."
+version = "1.0.0"
+id = "artifacts/cosmic-cones"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23991
+
+[services.development]
+run = "pnpm --filter @workspace/cosmic-cones run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/cosmic-cones", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/cosmic-cones/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23991"
+BASE_PATH = "/"

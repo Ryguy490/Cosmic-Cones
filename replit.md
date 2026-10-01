@@ -1,10 +1,11 @@
-# [Project name]
+# Cosmic Cones
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A responsive storefront and collection guide for Cosmic Cones, a collectible fidget cone brand made by Gavyan Co. Visitors can browse the current and seasonal collections, but sales are not open and the site does not accept orders.
 
 ## Run & Operate
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/cosmic-cones run dev` — run the Cosmic Cones storefront
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
@@ -22,23 +23,27 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/cosmic-cones/src/App.tsx` — storefront and collection browsing
+- `artifacts/cosmic-cones/src/index.css` — brand theme and responsive styling
+- `artifacts/cosmic-cones/public/cosmic-hero.png` — generated hero artwork
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The storefront is frontend-only for now. Do not add a checkout or payment flow until sales are explicitly opened.
+- Product collection names, color descriptions, seasonal windows, and rarity odds come from the supplied Cosmic Cones notes; do not invent prices or product claims.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+The site introduces the brand, lets visitors explore six collections and their individual cone designs, explains rarity, and clearly communicates that sales are coming soon.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Use navy and yellow as Cosmic Cones' primary brand colors.
+- Keep purchases disabled until the user is ready to sell.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- The source odds are retained as supplied, including rounded collection totals that may not equal exactly 100%.
 
 ## Pointers
 
