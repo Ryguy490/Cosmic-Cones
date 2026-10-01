@@ -25,16 +25,18 @@ A responsive storefront and collection guide for Cosmic Cones, a collectible fid
 
 - `artifacts/cosmic-cones/src/App.tsx` — storefront and collection browsing
 - `artifacts/cosmic-cones/src/index.css` — brand theme and responsive styling
-- `artifacts/cosmic-cones/public/cosmic-cone-product.jpg` — supplied product photo used in the storefront
+- `artifacts/cosmic-cones/src/components/cone-illustration.tsx` — product-shaped spiral cone artwork
+- `artifacts/cosmic-cones/public/cosmic-cone-product.jpg` — supplied example photo kept as a shape reference, not displayed as a product
 
 ## Architecture decisions
 
 - The storefront is frontend-only for now. Do not add a checkout or payment flow until sales are explicitly opened.
 - Product collection names, color descriptions, seasonal windows, and rarity odds come from the supplied Cosmic Cones notes; do not invent prices or product claims.
+- Show Classic year-round and render seasonal collections only inside their scheduled release windows.
 
 ## Product
 
-The site introduces the brand, lets visitors explore six collections and their individual cone designs, explains rarity, and clearly communicates that sales are coming soon.
+The site lets visitors browse Classic year-round, reveals seasonal collections during their scheduled windows, explains rarity, and clearly communicates that sales are coming soon.
 
 ## User preferences
 

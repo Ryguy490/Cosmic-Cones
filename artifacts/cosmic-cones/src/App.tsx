@@ -1,5 +1,6 @@
-import { type CSSProperties, type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ConeIllustration } from '@/components/cone-illustration';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -14,12 +15,25 @@ import {
 
 const queryClient = new QueryClient();
 
+const seasonalReleaseWindows: Record<string, readonly [number, number]> = {
+  "Valentine's Day": [201, 214],
+  "St. Patrick's Day": [301, 317],
+  Summer: [601, 831],
+  Fall: [1001, 1130],
+  Christmas: [1201, 1231],
+};
+
 function Home() {
-  const [selectedCollection, setSelectedCollection] = useState('All editions');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [now, setNow] = useState(() => new Date());
   useEffect(() => {
-    document.title = 'Cosmic Cones — Tiny worlds, worth finding';
-    const description = 'Meet Cosmic Cones: collectible fidget cones made by Gavyan Co. Explore classic rarities and seasonal editions. Sales are coming soon.';
+    const interval = window.setInterval(() => setNow(new Date()), 30_000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    document.title = 'Cosmic Cones — Pocket-sized fidgets';
+    const description = 'Pocket-sized fidget cones from Gavyan Co. Browse the Classic collection and seasonal designs during their scheduled release windows. Sales are coming soon.';
     let desc = document.querySelector('meta[name="description"]');
     if (!desc) {
       desc = document.createElement('meta');
@@ -28,10 +42,9 @@ function Home() {
     }
     desc.setAttribute('content', description);
     const tags: [string, string][] = [
-      ['og:title', 'Cosmic Cones — Tiny worlds, worth finding'],
+      ['og:title', 'Cosmic Cones — Pocket-sized fidgets'],
       ['og:description', description],
       ['og:type', 'website'],
-      ['og:image', '/cosmic-cone-product.jpg'],
     ];
     tags.forEach(([property, content]) => {
       let tag = document.querySelector(`meta[property="${property}"]`);
@@ -105,51 +118,33 @@ function Home() {
       ],
     },
   ] as const;
-  const visibleCollections = selectedCollection === 'All editions'
-    ? collections
-    : collections.filter((collection) => collection.name === selectedCollection);
-  const jumpToCollection = (name: string) => {
-    setSelectedCollection(name);
-    setMenuOpen(false);
-    document.getElementById('collections')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const todayKey = (now.getMonth() + 1) * 100 + now.getDate();
+  const visibleCollections = collections.filter((collection) => {
+    if (collection.name === 'Classic') return true;
+    const releaseWindow = seasonalReleaseWindows[collection.name];
+    return !!releaseWindow && todayKey >= releaseWindow[0] && todayKey <= releaseWindow[1];
+  });
+  const activeSeasonalCollections = visibleCollections.filter(
+    (collection) => collection.name !== 'Classic',
+  );
+  const releaseStatus = activeSeasonalCollections.length === 0
+    ? 'No seasonal collection is in its release window right now. Classic remains here all year.'
+    : activeSeasonalCollections.length === 1
+      ? `${activeSeasonalCollections[0].name} is in its scheduled release window.`
+      : `${activeSeasonalCollections.map((collection) => collection.name).join(' and ')} are in their scheduled release windows.`;
 
   return (
-    <main className="cosmic-page">
+    <main className="cosmic-page" id="top">
       <div className="announcement"><span className="announcement-dot" /> A new little universe is forming <span className="announcement-rule" /> SALES COMING SOON</div>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Cosmic Cones home"><span className="brand-mark"><Orbit size={21} strokeWidth={1.7} /></span><span>COSMIC<span className="brand-word-light"> CONES</span><small>BY GAVYAN CO.</small></span></a>
         <nav className={`main-nav ${menuOpen ? 'is-open' : ''}`} aria-label="Main navigation">
           <a href="#collections" onClick={() => setMenuOpen(false)}>The collections</a>
           <a href="#rarity" onClick={() => setMenuOpen(false)}>How rarity works</a>
-          <a href="#about" onClick={() => setMenuOpen(false)}>Our little universe</a>
         </nav>
         <a className="header-cta" href="#collections">Explore cones <ArrowUpRight size={15} /></a>
         <button className="mobile-menu" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
       </header>
-
-      <section className="hero" id="top">
-        <div className="hero-art">
-          <img
-            className="hero-product-image"
-            src="/cosmic-cone-product.jpg"
-            alt="Cosmic Cone fidget with a charcoal body and bright green spiral bands."
-          />
-          <span className="hero-art-caption">GREEN SPIRAL · CLASSIC</span>
-        </div>
-        <div className="hero-copy">
-          <div className="eyebrow"><span className="eyebrow-star" /> POCKET-SIZED FIDGETS</div>
-          <h1>Tiny worlds.<br /><em>Worth finding.</em></h1>
-          <p className="hero-intro">Meet the collectible fidget cone with a universe of color, character, and the thrill of the unexpected.</p>
-          <div className="hero-actions">
-            <a href="#collections" className="button-primary">Find your constellation <ArrowDown size={16} /></a>
-            <span className="hero-note">A collection to explore.<br />Not on sale just yet.</span>
-          </div>
-          <div className="hero-edition"><span className="edition-spark"><Sparkles size={14} /></span><span><b>6 collections</b><small>One curious little cosmos</small></span><span className="edition-divider" /><span><b>36 discoveries</b><small>Odds shown for every cone</small></span></div>
-        </div>
-        <span className="hero-side-note">COLLECT THE UNEXPECTED · VOL. 01</span>
-        <a className="scroll-cue" href="#collections"><span>SCROLL TO EXPLORE</span><ArrowDown size={14} /></a>
-      </section>
 
       <section className="ticker" aria-label="Brand statement">
         <div className="ticker-track"><span>SMALL OBJECTS, BIG UNIVERSE</span><i aria-hidden="true" /><span>MADE FOR THE CURIOUS</span><i aria-hidden="true" /><span>FIND YOUR FAVORITE</span><i aria-hidden="true" /><span>SMALL OBJECTS, BIG UNIVERSE</span><i aria-hidden="true" /><span>MADE FOR THE CURIOUS</span><i aria-hidden="true" /></div>
@@ -159,12 +154,7 @@ function Home() {
         <div className="section-kicker"><span>01 / THE COLLECTIONS</span><span>CHOOSE A LITTLE WORLD <ArrowDown size={13} /></span></div>
         <div className="collection-heading">
           <div><h2>A universe of<br /><em>little discoveries.</em></h2></div>
-          <p>From the first Classic to a once-a-season surprise, every collection has its own orbit. Take a look around—your favorite is out there.</p>
-        </div>
-        <div className="collection-filters" role="group" aria-label="Filter by collection">
-          {['All editions', ...collections.map((c) => c.name)].map((name) => (
-            <button key={name} className={selectedCollection === name ? 'filter-chip active' : 'filter-chip'} onClick={() => setSelectedCollection(name)} aria-pressed={selectedCollection === name}>{name}</button>
-          ))}
+          <p>Classic is always here. Seasonal collections appear automatically during their scheduled release windows.</p>
         </div>
         <div className="collection-list">
           {visibleCollections.map((collection, index) => (
@@ -175,19 +165,14 @@ function Home() {
                 <span className="collection-orbit"><Orbit size={34} strokeWidth={1} /></span>
               </div>
               <div className="cone-grid">
-                {collection.items.map(([name, odds, colors, swatches, layered], itemIndex) => (
+                {collection.items.map(([name, odds, colors, swatches], itemIndex) => (
                   <div className="cone-card" key={name} data-testid={`card-cone-${collection.tone}-${itemIndex}`}>
-                    <div className={`cone-stage ${layered ? 'is-layered' : ''}`}>
+                    <div className="cone-stage">
                       <span className="cone-star star-one" /><span className="cone-star star-two" />
-                      <span
-                        className="cone-shape"
-                        style={{
-                          '--cone-color-one': swatches[0],
-                          '--cone-color-two': swatches[1] ?? swatches[0],
-                          '--cone-color-three': swatches[2] ?? swatches[1] ?? swatches[0],
-                        } as CSSProperties}
+                      <ConeIllustration
+                        colors={swatches}
+                        metallic={collection.name === 'Classic' && name === 'Legendary'}
                       />
-                      <span className="cone-shadow" />
                       {Number.parseFloat(odds) <= 3.9 && <span className="rare-stamp"><Sparkles size={10} /> RARE FIND</span>}
                     </div>
                     <div className="cone-info"><div className="cone-name-line"><h4>{name}</h4><span className="odds">{odds}</span></div><p>{colors}</p></div>
@@ -197,13 +182,15 @@ function Home() {
             </article>
           ))}
         </div>
-        <div className="browse-note"><span className="note-orbit"><Orbit size={19} /></span><p><strong>Just looking is part of the fun.</strong> Sales are coming soon. For now, wander the collections and get to know the cosmos.</p><span className="soon-stamp">COMING<br />SOON</span></div>
+        <div className="browse-note"><span className="note-orbit"><Orbit size={19} /></span><p><strong>Just looking is part of the fun.</strong> Sales are coming soon. Seasonal collections appear here only during their scheduled release windows.</p><span className="soon-stamp">COMING<br />SOON</span></div>
       </section>
 
       <section className="rarity-section" id="rarity">
         <div className="rarity-art">
           <div className="rarity-sun" /><span className="rarity-path path-a" /><span className="rarity-path path-b" />
-          <div className="rarity-cone rarity-cone-one"><i /></div><div className="rarity-cone rarity-cone-two"><i /></div><div className="rarity-cone rarity-cone-three"><i /></div>
+          <div className="rarity-cone rarity-cone-one"><ConeIllustration colors={['#f5cb4f', '#f8f2df']} /></div>
+          <div className="rarity-cone rarity-cone-two"><ConeIllustration colors={['#67a9d1', '#e7e4d8']} /></div>
+          <div className="rarity-cone rarity-cone-three"><ConeIllustration colors={['#d97263', '#f4eee2']} /></div>
           <span className="rarity-label label-top">COMMON<br />32%</span><span className="rarity-label label-bottom">MYTHICAL<br />0.1%</span>
           <span className="rarity-caption">THE CLASSIC CONSTELLATION</span>
         </div>
@@ -217,37 +204,22 @@ function Home() {
         </div>
       </section>
 
-      <section className="season-section" id="seasons">
-        <div className="section-kicker"><span>02 / THE CALENDAR</span><span>THE YEAR, IN COLOR</span></div>
-        <div className="season-heading"><h2>Seasons come.<br /><em>Curiosities stay.</em></h2><p>Some collections only orbit by for a little while. Here's when to look for them.</p></div>
-        <div className="season-rail">
-          {[
-            ['FEB', "Valentine's Day", 'Feb 1 — Valentine’s Day', '#dc7d91'],
-            ['MAR', "St. Patrick's Day", 'Mar 1 — St. Patrick’s Day', '#699c67'],
-            ['JUN–AUG', 'Summer', 'June through August', '#55aab8'],
-            ['OCT–NOV', 'Fall', 'October and November', '#dc944f'],
-            ['DEC', 'Christmas', 'December', '#749b86'],
-          ].map(([month, name, timing, color]) => (
-            <button key={name} className="season-stop" onClick={() => jumpToCollection(name)} style={{ '--season-color': color } as CSSProperties}>
-              <span className="season-month">{month}</span><span className="season-dot"><i /></span><span className="season-name">{name}</span><span className="season-timing">{timing}</span><ArrowUpRight className="season-arrow" size={15} />
-            </button>
-          ))}
+      <section className="release-note-section" aria-label="Seasonal release status">
+        <div className="release-note-icon"><Orbit size={22} /></div>
+        <div>
+          <span className="release-note-kicker">SEASONAL RELEASES</span>
+          <p>
+            {releaseStatus} Seasonal designs appear automatically on their scheduled dates. Sales are still closed.
+          </p>
         </div>
-        <div className="season-footnote"><span className="tiny-spark" /> The Classic collection is the home constellation, here all year long.</div>
-      </section>
-
-      <section className="about-section" id="about">
-        <div className="about-mark"><span className="about-ring ring-one" /><span className="about-ring ring-two" /><span className="about-star" /><span className="about-dot" /></div>
-        <div className="about-copy"><div className="eyebrow"><span className="eyebrow-star" /> MADE BY GAVYAN CO.</div><h2>For the hands<br />that <em>love to wonder.</em></h2><p>Cosmic Cones turn a tiny moment into a small adventure. Follow the colors, discover the rarities, and find the cone that feels like yours.</p><a href="#collections" className="button-dark">Explore the collections <ArrowRight size={16} /></a></div>
-        <div className="about-side"><span className="about-side-num">A SMALL THING<br />WITH A BIG ORBIT.</span><span className="about-side-line" /><span className="about-side-credit">COSMIC CONES<br />GAVYAN CO.</span></div>
       </section>
 
       <section className="faq-section">
-        <div className="faq-heading"><div className="section-kicker"><span>03 / GOOD TO KNOW</span></div><h2>Curious?<br /><em>We are too.</em></h2><p>A few things worth knowing while the universe gets ready.</p></div>
+        <div className="faq-heading"><div className="section-kicker"><span>02 / GOOD TO KNOW</span></div><h2>Curious?<br /><em>We are too.</em></h2><p>A few things worth knowing while the universe gets ready.</p></div>
         <div className="faq-list">
-          <details><summary>Can I buy a Cosmic Cone today?<span>+</span></summary><p>Not yet. Sales are coming soon. You can explore every collection and its designs here while we get ready.</p></details>
+          <details><summary>Can I buy a Cosmic Cone today?<span>+</span></summary><p>Not yet. Sales are coming soon. Classic is always available to browse, and seasonal collections appear only during their scheduled windows.</p></details>
           <details><summary>What do the percentages mean?<span>+</span></summary><p>They are the listed odds for each design in its collection. They describe the chance of finding a design; rounded odds may not total exactly 100%.</p></details>
-          <details><summary>When do seasonal collections appear?<span>+</span></summary><p>Valentine’s Day runs Feb 1 through Valentine’s Day; St. Patrick’s Day runs March 1 through St. Patrick’s Day; Summer runs June through August; Fall runs October and November; Christmas runs December.</p></details>
+          <details><summary>When do seasonal collections appear?<span>+</span></summary><p>Valentine’s Day runs Feb 1–14; St. Patrick’s Day runs March 1–17; Summer runs June through August; Fall runs October and November; Christmas runs December. Each collection appears automatically during its window.</p></details>
         </div>
       </section>
 
