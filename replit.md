@@ -25,7 +25,7 @@ A responsive storefront and collection guide for Cosmic Cones, a collectible fid
 
 - `artifacts/cosmic-cones/src/App.tsx` — storefront and collection browsing
 - `artifacts/cosmic-cones/src/index.css` — brand theme and responsive styling
-- `artifacts/cosmic-cones/public/cosmic-hero.png` — generated hero artwork
+- `artifacts/cosmic-cones/public/cosmic-cone-product.jpg` — supplied product photo used in the storefront
 
 ## Architecture decisions
 

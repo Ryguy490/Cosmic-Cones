@@ -31,7 +31,7 @@ function Home() {
       ['og:title', 'Cosmic Cones — Tiny worlds, worth finding'],
       ['og:description', description],
       ['og:type', 'website'],
-      ['og:image', '/cosmic-hero.png'],
+      ['og:image', '/cosmic-cone-product.jpg'],
     ];
     tags.forEach(([property, content]) => {
       let tag = document.querySelector(`meta[property="${property}"]`);
@@ -129,9 +129,16 @@ function Home() {
       </header>
 
       <section className="hero" id="top">
-        <div className="hero-art" role="img" aria-label="Three colorful Cosmic Cones floating among stars" />
+        <div className="hero-art">
+          <img
+            className="hero-product-image"
+            src="/cosmic-cone-product.jpg"
+            alt="Cosmic Cone fidget with a charcoal body and bright green spiral bands."
+          />
+          <span className="hero-art-caption">GREEN SPIRAL · CLASSIC</span>
+        </div>
         <div className="hero-copy">
-          <div className="eyebrow"><span className="eyebrow-star" /> A POCKET-SIZED COSMOS</div>
+          <div className="eyebrow"><span className="eyebrow-star" /> POCKET-SIZED FIDGETS</div>
           <h1>Tiny worlds.<br /><em>Worth finding.</em></h1>
           <p className="hero-intro">Meet the collectible fidget cone with a universe of color, character, and the thrill of the unexpected.</p>
           <div className="hero-actions">
@@ -172,7 +179,14 @@ function Home() {
                   <div className="cone-card" key={name} data-testid={`card-cone-${collection.tone}-${itemIndex}`}>
                     <div className={`cone-stage ${layered ? 'is-layered' : ''}`}>
                       <span className="cone-star star-one" /><span className="cone-star star-two" />
-                      <span className="cone-shape" style={{ '--cone-colors': swatches.join(',') } as CSSProperties} />
+                      <span
+                        className="cone-shape"
+                        style={{
+                          '--cone-color-one': swatches[0],
+                          '--cone-color-two': swatches[1] ?? swatches[0],
+                          '--cone-color-three': swatches[2] ?? swatches[1] ?? swatches[0],
+                        } as CSSProperties}
+                      />
                       <span className="cone-shadow" />
                       {Number.parseFloat(odds) <= 3.9 && <span className="rare-stamp"><Sparkles size={10} /> RARE FIND</span>}
                     </div>
