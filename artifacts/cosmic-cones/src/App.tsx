@@ -272,7 +272,7 @@ function Home() {
 
       <footer className="site-footer">
         <div className="footer-top"><a className="brand footer-brand" href="#top"><span className="brand-mark"><Orbit size={21} strokeWidth={1.7} /></span><span>COSMIC<span className="brand-word-light"> CONES</span><small>BY GAVYAN CO.</small></span></a><span className="footer-note">A tiny universe, waiting to be found.</span><a href="#top" className="back-top">BACK TO THE TOP <ArrowUpRight size={14} /></a></div>
-        <div className="footer-bottom"><span>© GAVYAN CO. · COSMIC CONES</span><span>SALES COMING SOON</span><span>MADE FOR THE CURIOUS</span></div>
+        <div className="footer-bottom"><span>© GAVYAN CO. · COSMIC CONES</span><span>SALES COMING SOON</span></div>
       </footer>
     </main>
   );
