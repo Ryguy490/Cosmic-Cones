@@ -32,7 +32,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    document.title = 'Cosmic Cones — Pocket-sized fidgets';
+    document.title = 'Cosmic-Cones';
     const description = 'Pocket-sized fidget cones from Gavyan Co. Browse the Classic collection and seasonal designs during their scheduled release windows. Sales are coming soon.';
     let desc = document.querySelector('meta[name="description"]');
     if (!desc) {
@@ -42,7 +42,7 @@ function Home() {
     }
     desc.setAttribute('content', description);
     const tags: [string, string][] = [
-      ['og:title', 'Cosmic Cones — Pocket-sized fidgets'],
+      ['og:title', 'Cosmic-Cones'],
       ['og:description', description],
       ['og:type', 'website'],
     ];

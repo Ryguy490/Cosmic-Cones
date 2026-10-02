@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/"
-title = "Cosmic Cones"
+title = "Cosmic-Cones"
 description = "A colorful storefront for Cosmic Cones, a collectable fidget cone brand made by Gavyan Co. Browse Classic and seasonal cone collections, learn about each design and rarity, and see that sales are coming soon."
 version = "1.0.0"
 id = "artifacts/cosmic-cones"
