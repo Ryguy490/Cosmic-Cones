@@ -511,7 +511,6 @@ body { background: var(--paper); }
 .collection-intro { position:relative; display:flex; justify-content:space-between; align-items:center; padding:20px 0 19px; }
 .collection-intro h3 { margin:0; font:700 clamp(27px,3.4vw,38px)/1 'Outfit',sans-serif; letter-spacing:-.05em; }
 .collection-intro p { margin:7px 0 0; color:#737a88; font-size:12px; }
-.title-period { color:#d5a73e; }
 .collection-orbit { display:grid; place-items:center; width:47px; height:47px; border:1px solid #e5e0d1; border-radius:50%; color:#8790a2; }
 .cone-grid { position:relative; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:11px; }
 .cone-card { min-width:0; overflow:hidden; border:1px solid #e7e2d7; background:#f7f4e9; transition:transform .25s ease,box-shadow .25s ease; }

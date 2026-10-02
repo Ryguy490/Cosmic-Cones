@@ -206,7 +206,7 @@ function Home() {
           {visibleCollections.map((collection) => (
             <article className={`collection-block ${collection.tone}`} id={`collection-${collection.tone}`} key={collection.name}>
               <div className="collection-intro">
-                <div><h3>{collection.name}<span className="title-period">.</span></h3>{collection.intro && <p>{collection.intro}</p>}</div>
+                <div><h3>{collection.name}</h3>{collection.intro && <p>{collection.intro}</p>}</div>
                 <span className="collection-orbit"><Orbit size={34} strokeWidth={1} /></span>
               </div>
               <div className="cone-grid">
