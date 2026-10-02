@@ -59,7 +59,7 @@ function Home() {
 
   const collections = [
     {
-      name: 'Classic', window: 'THE FOUNDING SET', tone: 'classic', intro: 'Six little worlds. One iconic silhouette. Start anywhere.',
+      name: 'Classic', tone: 'classic', intro: '',
       items: [
         ['Common', '32%', 'yellow & white', ['#f5c943', '#f9f3df']],
         ['Uncommon', '26.7%', 'green & white', ['#79a879', '#f9f3df']],
@@ -70,7 +70,7 @@ function Home() {
       ],
     },
     {
-      name: "Valentine's Day", window: 'FEB 1 — VALENTINE’S DAY', tone: 'valentine', intro: 'A small orbit of hearts, from sweet to cosmic.',
+      name: "Valentine's Day", tone: 'valentine', intro: 'A small orbit of hearts, from sweet to cosmic.',
       items: [
         ['Heart reg.', '33%', 'pink & red', ['#ed9aa8', '#d94355']],
         ['Heart dark', '33%', 'red & purple', ['#d94355', '#714d8f']],
@@ -79,7 +79,7 @@ function Home() {
       ],
     },
     {
-      name: "St. Patrick's Day", window: 'MAR 1 — ST. PATRICK’S DAY', tone: 'patrick', intro: 'Four lucky finds with a little green in their orbit.',
+      name: "St. Patrick's Day", tone: 'patrick', intro: 'Four lucky finds with a little green in their orbit.',
       items: [
         ['Classic Shamrock', '33%', 'light & dark green', ['#a7c58c', '#326d4b']],
         ['Light Shamrock', '33%', 'white & light green', ['#f9f3df', '#a7c58c']],
@@ -88,7 +88,7 @@ function Home() {
       ],
     },
     {
-      name: 'Summer', window: 'JUNE — AUGUST', tone: 'summer', intro: 'Salt-air shades, open skies and a rare shimmer in the tide.',
+      name: 'Summer', tone: 'summer', intro: 'Salt-air shades, open skies and a rare shimmer in the tide.',
       items: [
         ['Beach', '20%', 'blue & tan', ['#76b8d1', '#cfad80']],
         ['Ocean', '20%', 'blue & teal', ['#3c8dac', '#5fc2ae']],
@@ -99,7 +99,7 @@ function Home() {
       ],
     },
     {
-      name: 'Fall', window: 'OCTOBER — NOVEMBER', tone: 'fall', intro: 'Golden hour, crunchy leaves and one pumpkin-spiced surprise.',
+      name: 'Fall', tone: 'fall', intro: 'Golden hour, crunchy leaves and one pumpkin-spiced surprise.',
       items: [
         ['Sunshine', '25%', 'gold & yellow', ['#dba94e', '#f4cf5d']],
         ['Colorful Leaves', '25%', 'red & orange', ['#c74f42', '#e98346']],
@@ -109,7 +109,7 @@ function Home() {
       ],
     },
     {
-      name: 'Christmas', window: 'DECEMBER', tone: 'christmas', intro: 'A winter constellation wrapped in color and layered stripes.',
+      name: 'Christmas', tone: 'christmas', intro: 'A winter constellation wrapped in color and layered stripes.',
       items: [
         ['Spearmint', '30%', 'green & white layered', ['#65a57a', '#f7f0da'], true],
         ['Blizzard', '30%', 'blue & white layered', ['#70aaca', '#f7f0da'], true],
@@ -202,13 +202,11 @@ function Home() {
       </section>
 
       <section className="collections-section" id="collections">
-        <div className="section-kicker"><span>01 / THE COLLECTIONS</span></div>
         <div className="collection-list">
-          {visibleCollections.map((collection, index) => (
+          {visibleCollections.map((collection) => (
             <article className={`collection-block ${collection.tone}`} id={`collection-${collection.tone}`} key={collection.name}>
-              <div className="collection-topline"><span className="collection-index">0{index + 1}</span><span className="collection-season">{collection.window}</span><span className="collection-count">{collection.items.length} CONES IN THIS SET</span></div>
               <div className="collection-intro">
-                <div><h3>{collection.name}<span className="title-period">.</span></h3><p>{collection.intro}</p></div>
+                <div><h3>{collection.name}<span className="title-period">.</span></h3>{collection.intro && <p>{collection.intro}</p>}</div>
                 <span className="collection-orbit"><Orbit size={34} strokeWidth={1} /></span>
               </div>
               <div className="cone-grid">

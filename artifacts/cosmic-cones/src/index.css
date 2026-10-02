@@ -508,10 +508,6 @@ body { background: var(--paper); }
 .collection-list { display:grid; gap:17px; }
 .collection-block { position:relative; padding:24px 27px 27px; overflow:hidden; border:1px solid #ded9cb; background:#fbf9f1; }
 .collection-block:before { content:""; position:absolute; z-index:0; width:230px; height:230px; right:-90px; top:-135px; border:1px solid rgba(23,36,72,.08); border-radius:50%; box-shadow:0 0 0 25px rgba(23,36,72,.018),0 0 0 50px rgba(23,36,72,.014); }
-.collection-topline { position:relative; display:flex; align-items:center; gap:12px; padding-bottom:15px; border-bottom:1px solid #e6e2d7; font:9px 'DM Mono',monospace; letter-spacing:.09em; color:#747b8b; }
-.collection-index { color:#a5a293; }
-.collection-season { color:#9d7140; }
-.collection-count { margin-left:auto; }
 .collection-intro { position:relative; display:flex; justify-content:space-between; align-items:center; padding:20px 0 19px; }
 .collection-intro h3 { margin:0; font:700 clamp(27px,3.4vw,38px)/1 'Outfit',sans-serif; letter-spacing:-.05em; }
 .collection-intro p { margin:7px 0 0; color:#737a88; font-size:12px; }
@@ -635,7 +631,6 @@ body { background: var(--paper); }
   .collections-section { padding:61px 5% 67px; }
   .section-kicker { font-size:8px; }
   .collection-block { padding:17px 13px 15px; }
-  .collection-topline { gap:7px; font-size:7px; letter-spacing:.04em; }
   .collection-count { font-size:6px; }
   .collection-intro { padding:17px 0 14px; }
   .collection-intro h3 { font-size:29px; }
