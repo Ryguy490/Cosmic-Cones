@@ -35,7 +35,16 @@ function Home() {
 
   useEffect(() => {
     let midnightTimer = 0;
-    const syncNow = () => setNow(new Date());
+    const syncNow = () => {
+      const nextDate = new Date();
+      setNow((currentDate) => (
+        currentDate.getFullYear() === nextDate.getFullYear()
+          && currentDate.getMonth() === nextDate.getMonth()
+          && currentDate.getDate() === nextDate.getDate()
+          ? currentDate
+          : nextDate
+      ));
+    };
     const scheduleMidnightSync = () => {
       const current = new Date();
       const nextMidnight = new Date(
@@ -63,7 +72,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    let reloadTimer = 0;
+    let refreshTimer = 0;
 
     const resetPull = () => {
       touchStartY.current = null;
@@ -101,7 +110,7 @@ function Home() {
       if (!shouldRefresh) return;
 
       setIsRefreshing(true);
-      reloadTimer = window.setTimeout(() => window.location.reload(), 180);
+      refreshTimer = window.setTimeout(() => window.location.reload(), 180);
     };
     const handleTouchCancel = () => resetPull();
 
@@ -111,7 +120,7 @@ function Home() {
     window.addEventListener('touchcancel', handleTouchCancel, { passive: true });
 
     return () => {
-      window.clearTimeout(reloadTimer);
+      window.clearTimeout(refreshTimer);
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleTouchEnd);

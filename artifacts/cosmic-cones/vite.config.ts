@@ -20,6 +20,7 @@ if (Number.isNaN(port) || port <= 0) {
 }
 
 const basePath = process.env.BASE_PATH;
+const replitDevDomain = process.env.REPLIT_DEV_DOMAIN;
 
 if (!basePath) {
   throw new Error(
@@ -69,6 +70,10 @@ export default defineConfig({
     strictPort: true,
     host: '0.0.0.0',
     allowedHosts: true,
+    // Route HMR through Replit's HTTPS proxy rather than the private app port.
+    hmr: replitDevDomain
+      ? { host: replitDevDomain, protocol: 'wss', clientPort: 443 }
+      : undefined,
     fs: {
       strict: true,
     },

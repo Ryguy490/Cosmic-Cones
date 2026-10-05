@@ -1,0 +1,1 @@
+- [Cosmic Cones refresh behavior](cosmic-cones-refresh.md) — keep full-page reloads manual and seasonal visibility date-driven.
