@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ConeIllustration } from '@/components/cone-illustration';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -23,12 +23,100 @@ const seasonalReleaseWindows: Record<string, readonly [number, number]> = {
   Christmas: [1201, 1231],
 };
 
+const PULL_TO_REFRESH_THRESHOLD = 72;
+
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [now, setNow] = useState(() => new Date());
+  const [pullDistance, setPullDistance] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const touchStartY = useRef<number | null>(null);
+  const pullDistanceRef = useRef(0);
+
   useEffect(() => {
-    const interval = window.setInterval(() => setNow(new Date()), 30_000);
-    return () => window.clearInterval(interval);
+    let midnightTimer = 0;
+    const syncNow = () => setNow(new Date());
+    const scheduleMidnightSync = () => {
+      const current = new Date();
+      const nextMidnight = new Date(
+        current.getFullYear(),
+        current.getMonth(),
+        current.getDate() + 1,
+      );
+      midnightTimer = window.setTimeout(() => {
+        syncNow();
+        scheduleMidnightSync();
+      }, Math.max(1, nextMidnight.getTime() - current.getTime()));
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') syncNow();
+    };
+
+    scheduleMidnightSync();
+    window.addEventListener('focus', syncNow);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.clearTimeout(midnightTimer);
+      window.removeEventListener('focus', syncNow);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    let reloadTimer = 0;
+
+    const resetPull = () => {
+      touchStartY.current = null;
+      pullDistanceRef.current = 0;
+      setPullDistance(0);
+    };
+    const handleTouchStart = (event: TouchEvent) => {
+      if (event.touches.length !== 1 || window.scrollY > 0) {
+        resetPull();
+        return;
+      }
+      touchStartY.current = event.touches[0].clientY;
+    };
+    const handleTouchMove = (event: TouchEvent) => {
+      if (touchStartY.current === null || event.touches.length !== 1) return;
+      if (window.scrollY > 0) {
+        resetPull();
+        return;
+      }
+
+      const distance = event.touches[0].clientY - touchStartY.current;
+      if (distance <= 0) {
+        resetPull();
+        return;
+      }
+      if (distance >= 4) event.preventDefault();
+
+      const nextDistance = Math.min(distance, 108);
+      pullDistanceRef.current = nextDistance;
+      setPullDistance(nextDistance);
+    };
+    const handleTouchEnd = () => {
+      const shouldRefresh = pullDistanceRef.current >= PULL_TO_REFRESH_THRESHOLD;
+      resetPull();
+      if (!shouldRefresh) return;
+
+      setIsRefreshing(true);
+      reloadTimer = window.setTimeout(() => window.location.reload(), 180);
+    };
+    const handleTouchCancel = () => resetPull();
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('touchcancel', handleTouchCancel, { passive: true });
+
+    return () => {
+      window.clearTimeout(reloadTimer);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchcancel', handleTouchCancel);
+    };
   }, []);
 
   useEffect(() => {
@@ -146,6 +234,21 @@ function Home() {
 
   return (
     <main className="cosmic-page" id="top">
+      <div
+        className={`pull-refresh-indicator ${pullDistance > 0 || isRefreshing ? 'is-visible' : ''}`}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        aria-hidden={pullDistance === 0 && !isRefreshing}
+        data-testid="status-pull-to-refresh"
+        style={{ transform: `translate(-50%, ${Math.max(0, pullDistance - 36)}px)` }}
+      >
+        {isRefreshing
+          ? 'Refreshing'
+          : pullDistance >= PULL_TO_REFRESH_THRESHOLD
+            ? 'Release to refresh'
+            : 'Pull to refresh'}
+      </div>
       <div className="announcement"><span className="announcement-dot" /> A new little universe is forming <span className="announcement-rule" /> SALES COMING SOON</div>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Cosmic Cones home"><span className="brand-mark"><Orbit size={21} strokeWidth={1.7} /></span><span>COSMIC<span className="brand-word-light"> CONES</span><small>BY GAVYAN CO.</small></span></a>
